@@ -23,7 +23,7 @@ jobs:
           ref: ${{ github.head_ref }}
 
       - name: Run Trivy filesystem secret scan
-        uses: aquasecurity/trivy-action@v0.28.0
+        uses: aquasecurity/trivy-action@v2.328.0
         with:
           # fs mode scans the checked-out workspace
           scan-type: 'fs'
