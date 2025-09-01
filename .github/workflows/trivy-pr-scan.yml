@@ -1,0 +1,38 @@
+name: Trivy PR secret scan
+
+on:
+  pull_request:
+    # run when PR targets main
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  trivy-secret-scan:
+    name: Trivy secret scan (fail on any secret)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          # fetch full history so Trivy can read files reliably
+          fetch-depth: 0
+          # ensure we check out the PR head ref
+          ref: ${{ github.head_ref }}
+
+      - name: Run Trivy filesystem secret scan
+        uses: aquasecurity/trivy-action@v0.28.0
+        with:
+          # fs mode scans the checked-out workspace
+          scan-type: 'fs'
+          scan-ref: '.'
+          # use the trivy.yaml that lives in repo root
+          trivy-config: 'trivy.yaml'
+          # show readable table in logs
+          format: 'table'
+          # cause the action to exit non-zero when Trivy finds issues
+          exit-code: '1'
+          # optional: limit job time
+          timeout: '10m0s'
