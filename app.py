@@ -1,6 +1,8 @@
-def say_hello():
-    print("Hello from main branch")
+def divide(a, b):
+    return a / b
 
+def greet_user(name: str) -> str
+    return "Hello " + name
 
-if __name__ == "__main__":
-    say_hello()
+print(divide(10, 0))
+print(greet_user("Tanmay"))
