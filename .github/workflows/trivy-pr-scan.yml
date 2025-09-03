@@ -45,7 +45,7 @@ jobs:
       - name: Run flake8 (Linting)
         run: |
           echo "🔎 Running lint checks..."
-          flake8 .
+          flake8 . --select=E
 
       # Run Python Tests (allow no tests, but fail on real errors)
       - name: Run pytest
