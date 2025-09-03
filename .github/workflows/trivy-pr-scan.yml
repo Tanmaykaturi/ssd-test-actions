@@ -47,8 +47,8 @@ jobs:
           echo "🔎 Running lint checks..."
           flake8 .
 
-      # Run Python Tests (will fail if tests or syntax fail)
+      # Run Python Tests (allow no tests, but fail on real errors)
       - name: Run pytest
         run: |
           echo "🧪 Running tests..."
-          pytest --maxfail=1 --disable-warnings -q
+          pytest --maxfail=1 --disable-warnings -q || [ $? -eq 5 ]
