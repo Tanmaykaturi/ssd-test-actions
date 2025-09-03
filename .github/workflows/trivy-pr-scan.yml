@@ -45,9 +45,9 @@ jobs:
       - name: Run flake8 (Linting)
         run: |
           echo "🔎 Running lint checks..."
-          flake8 . --exit-zero
+          flake8 .
 
       - name: Run pytest (ignore if no tests)
         run: |
           echo "🧪 Running tests..."
-          pytest || true
+          pytest
