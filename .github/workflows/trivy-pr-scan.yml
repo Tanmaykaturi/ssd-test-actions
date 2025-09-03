@@ -27,7 +27,7 @@ jobs:
       - name: Run Trivy Scan
         run: |
           echo "🔍 Running Trivy scan..."
-          trivy fs --security-checks vuln,secret --exit-code 1 --no-progress .
+          trivy fs --scanners vuln,secret --exit-code 1 --no-progress .
 
       # Set up Python
       - name: Set up Python
@@ -41,13 +41,14 @@ jobs:
           python -m pip install --upgrade pip
           pip install flake8 pytest
 
-      # Run Python Linter
+      # Run Python Linter (will fail on errors)
       - name: Run flake8 (Linting)
         run: |
           echo "🔎 Running lint checks..."
           flake8 .
 
-      - name: Run pytest (ignore if no tests)
+      # Run Python Tests (will fail if tests or syntax fail)
+      - name: Run pytest
         run: |
           echo "🧪 Running tests..."
-          pytest
+          pytest --maxfail=1 --disable-warnings -q
