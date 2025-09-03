@@ -1,4 +1,4 @@
-name: Trivy Secret Scan on PR
+name: Security and Code Quality Scan
 
 on:
   pull_request:
@@ -7,12 +7,13 @@ on:
       - dev
 
 jobs:
-  trivy-secret-scan:
+  scan-and-test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # Install Trivy
       - name: Install Trivy
         run: |
           sudo apt-get update -y
@@ -22,7 +23,32 @@ jobs:
           sudo apt-get update -y
           sudo apt-get install -y trivy
 
-      - name: Run Trivy Secret Scan
+      # Run Trivy Scan (secrets + vulnerabilities)
+      - name: Run Trivy Scan
         run: |
-          echo "🔍 Running Trivy secret scan..."
-          trivy fs --security-checks secret --exit-code 1 --no-progress .
+          echo "🔍 Running Trivy scan..."
+          trivy fs --security-checks vuln,secret --exit-code 1 --no-progress .
+
+      # Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      # Install dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8 pytest
+
+      # Run Python Linter
+      - name: Run flake8 (Linting)
+        run: |
+          echo "🔎 Running lint checks..."
+          flake8 . --exit-zero
+
+      # Run Unit Tests
+      - name: Run pytest
+        run: |
+          echo "🧪 Running tests..."
+          pytest || exit 1
